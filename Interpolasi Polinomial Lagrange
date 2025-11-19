@@ -1,0 +1,40 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Data titik
+x = np.array([1.0, 2.0, 3.0])
+y = np.array([3.0, 8.0, 15.0])
+xp = 2.5
+
+# Fungsi interpolasi Lagrange
+def lagrange_interpolation(x, y, xp):
+    p = 0.0
+    n = len(x)
+    for i in range(n):
+        L = 1.0
+        for j in range(n):
+            if j != i:
+                L *= (xp - x[j]) / (x[i] - x[j])
+        p += y[i] * L
+    return p
+
+# Hitung nilai f(2.5)
+L_value = lagrange_interpolation(x, y, xp)
+print("Interpolasi Polinomial Lagrange f(2.5) =", L_value)
+
+# --- Grafik ---
+xr = np.linspace(min(x), max(x), 200)
+yr = [lagrange_interpolation(x, y, xi) for xi in xr]
+
+plt.figure(figsize=(7, 5))
+
+plt.plot(xr, yr, linewidth=2, label="Kurva Lagrange")
+plt.scatter(x, y, s=80, label="Titik Data")
+plt.scatter([xp], [L_value], s=80, label="f(2.5)", marker="x")
+
+plt.xlabel("x")
+plt.ylabel("y")
+plt.title("Interpolasi Polinomial Lagrange")
+plt.legend()
+plt.grid(True)
+plt.show()
