@@ -1,0 +1,48 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Data titik
+x = np.array([1.0, 2.0, 3.0])
+y = np.array([3.0, 8.0, 15.0])
+xp = 2.5
+
+# Fungsi menghitung tabel selisih terbagi (divided difference)
+def newton_divided_diff(x, y):
+    n = len(x)
+    coef = np.copy(y).astype(float)
+    for j in range(1, n):
+        for i in range(n-1, j-1, -1):
+            coef[i] = (coef[i] - coef[i-1]) / (x[i] - x[i-j])
+    return coef
+
+# Fungsi evaluasi polinomial Newton
+def newton_interpolation(x, coef, xp):
+    n = len(coef)
+    p = coef[n-1]
+    for k in range(n-2, -1, -1):
+        p = p * (xp - x[k]) + coef[k]
+    return p
+
+# Hitung koefisien Newton
+coef = newton_divided_diff(x, y)
+
+# Hitung nilai f(2.5)
+N_value = newton_interpolation(x, coef, xp)
+print("Interpolasi Polinomial Newton f(2.5) =", N_value)
+
+# --- Grafik ---
+xr = np.linspace(min(x), max(x), 200)
+yr = [newton_interpolation(x, coef, xi) for xi in xr]
+
+plt.figure(figsize=(7, 5))
+
+plt.plot(xr, yr, linewidth=2, label="Kurva Newton")
+plt.scatter(x, y, s=80, label="Titik Data")
+plt.scatter([xp], [N_value], s=80, label="f(2.5)", marker="x")
+
+plt.xlabel("x")
+plt.ylabel("y")
+plt.title("Interpolasi Polinomial Newton")
+plt.legend()
+plt.grid(True)
+plt.show()
